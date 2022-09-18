@@ -5,7 +5,7 @@ function App() {
     <>
       <div className='container'>
         <nav className='global-nav'>
-          <div className='global-nav-link'>
+          <div className='global-nav-links'>
             <a href='#' className='global-nav-item'>
               Rooms
             </a>
@@ -18,6 +18,16 @@ function App() {
             <a href='#' className='global-nav-item'>
               Contact asda
             </a>
+          </div>
+        </nav>
+        <nav className='local-nav'>
+          <div className='local-nav-links'>
+            <a href='#' className='product-name'>
+              AirMug Pro
+            </a>
+            <a href='#'>개요</a>
+            <a href='#'>제품사양</a>
+            <a href='#'>구입하기</a>
           </div>
         </nav>
       </div>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface ISceneInfo {
   type: 'sticky' | 'normal';
@@ -15,6 +15,8 @@ interface ISceneInfo {
 }
 
 function App() {
+  const scrollYRef = useRef<number>(0);
+
   const [sceneInfo, setSceneInfo] = useState<ISceneInfo[]>([
     {
       // 0
@@ -46,7 +48,7 @@ function App() {
     },
   ]);
 
-  const setLayout = () => {
+  const setLayout = (): void => {
     // 각 스크롤 섹션의 높이 세팅
     const newSceneInfo: ISceneInfo[] = sceneInfo.map((scene: ISceneInfo, sceneIndex: number) => {
       scene.scrollHeight = scene.heightNum * window.innerHeight;
@@ -68,13 +70,21 @@ function App() {
     setSceneInfo(newSceneInfo);
   };
 
+  const setScroll = (): void => {
+    scrollYRef.current = window.scrollY;
+
+    console.log(scrollYRef.current);
+  };
+
   useEffect(() => {
     setLayout();
 
     window.addEventListener('resize', setLayout);
+    window.addEventListener('scroll', setScroll);
 
     return (): void => {
       window.removeEventListener('resize', setLayout);
+      window.removeEventListener('scroll', setScroll);
     };
   }, []);
 

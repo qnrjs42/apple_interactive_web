@@ -1,6 +1,83 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+interface ISceneInfo {
+  type: 'sticky' | 'normal';
+  heightNum: number;
+  scrollHeight: number;
+  objs: {
+    container?: HTMLElement | null;
+    messageA?: HTMLElement | null;
+    messageB?: HTMLElement | null;
+    messageC?: HTMLElement | null;
+    canvas?: HTMLCanvasElement;
+    context?: CanvasRenderingContext2D;
+  };
+}
 
 function App() {
+  const [sceneInfo, setSceneInfo] = useState<ISceneInfo[]>([
+    {
+      // 0
+      type: 'sticky',
+      heightNum: 5, // 브라우저 높이의 5배 scrollHeight 세팅
+      scrollHeight: 0,
+      objs: {},
+    },
+    {
+      // 1
+      type: 'normal',
+      heightNum: 5, // 브라우저 높이의 5배 scrollHeight 세팅
+      scrollHeight: 0,
+      objs: {},
+    },
+    {
+      // 2
+      type: 'sticky',
+      heightNum: 5, // 브라우저 높이의 5배 scrollHeight 세팅
+      scrollHeight: 0,
+      objs: {},
+    },
+    {
+      // 3
+      type: 'sticky',
+      heightNum: 5, // 브라우저 높이의 5배 scrollHeight 세팅
+      scrollHeight: 0,
+      objs: {},
+    },
+  ]);
+
+  const setLayout = () => {
+    // 각 스크롤 섹션의 높이 세팅
+    const newSceneInfo: ISceneInfo[] = sceneInfo.map((scene: ISceneInfo, sceneIndex: number) => {
+      scene.scrollHeight = scene.heightNum * window.innerHeight;
+
+      // set scroll section height
+      const container: HTMLElement | null = document.getElementById(`scroll-section-${sceneIndex}`);
+      container && (container.style.height = `${scene.scrollHeight}px`);
+
+      return {
+        ...scene,
+        objs: {
+          container,
+        },
+      };
+    });
+
+    console.log(newSceneInfo);
+
+    setSceneInfo(newSceneInfo);
+  };
+
+  useEffect(() => {
+    setLayout();
+
+    window.addEventListener('resize', setLayout);
+
+    return (): void => {
+      window.removeEventListener('resize', setLayout);
+    };
+  }, []);
+
   return (
     <>
       <div className='container'>

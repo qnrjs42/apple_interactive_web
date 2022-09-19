@@ -15,8 +15,6 @@ interface ISceneInfo {
 }
 
 function App() {
-  const scrollYRef = useRef<number>(0);
-
   const [sceneInfo, setSceneInfo] = useState<ISceneInfo[]>([
     {
       // 0
@@ -48,6 +46,11 @@ function App() {
     },
   ]);
 
+  const scrollYRef = useRef<number>(0);
+  const prevScrollHeightRef = useRef<number>(0); // 현재 스크롤 위치(scrollY)보다 이전에 위치한 스크롤 섹션들의 스크롤 높이 값의 합
+  const currentSceneRef = useRef<number>(0); // 현재 활성화된(눈 앞에 보고있는) 씬(scroll-section)
+  const enterNewSceneRef = useRef<boolean>(false); // 새로운 scene이 시작된 순간 true
+
   const setLayout = (): void => {
     // 각 스크롤 섹션의 높이 세팅
     const newSceneInfo: ISceneInfo[] = sceneInfo.map((scene: ISceneInfo, sceneIndex: number) => {
@@ -65,15 +68,31 @@ function App() {
       };
     });
 
-    console.log(newSceneInfo);
-
     setSceneInfo(newSceneInfo);
   };
 
   const setScroll = (): void => {
     scrollYRef.current = window.scrollY;
+    prevScrollHeightRef.current = 0;
 
-    console.log(scrollYRef.current);
+    for (let i = 0; i < currentSceneRef.current; i++) {
+      prevScrollHeightRef.current += sceneInfo[i].scrollHeight;
+    }
+
+    if (
+      scrollYRef.current >
+      prevScrollHeightRef.current + sceneInfo[currentSceneRef.current].scrollHeight
+    ) {
+      currentSceneRef.current += 1;
+    }
+
+    if (scrollYRef.current < prevScrollHeightRef.current) {
+      if (currentSceneRef.current === 0) return; // 브라우저 바운스 효과로 인한 오류 방지
+
+      currentSceneRef.current -= 1;
+    }
+
+    console.log(currentSceneRef.current);
   };
 
   useEffect(() => {
